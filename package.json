@@ -1,0 +1,35 @@
+{
+  "name": "alejoavila-chat-wc-lib-web-ui",
+  "version": "1.0.0",
+  "description": "Chat widget published as a framework-agnostic custom element",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "ng build && node scripts/package.mjs",
+    "lint": "eslint",
+    "test": "node scripts/test.mjs"
+  },
+  "dependencies": {
+    "@angular/common": "22.2.1",
+    "@angular/compiler": "22.2.1",
+    "@angular/core": "22.2.1",
+    "@angular/elements": "22.2.1",
+    "@angular/platform-browser": "22.2.1",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "22.2.1",
+    "@angular/cli": "22.2.1",
+    "@angular/compiler-cli": "22.2.1",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.1",
+    "angular-eslint": "^22.5.0",
+    "eslint": "^10.12.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "^8.71.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
