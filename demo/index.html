@@ -17,10 +17,18 @@
         margin: 0 auto;
       }
       h1 {
-        font-size: 1rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
+        color: #7f90aa;
+      }
+      pre {
+        padding: 0.75rem;
+        overflow-x: auto;
+        border: 1px solid rgba(110, 170, 235, 0.16);
+        border-radius: 0.5rem;
+        font-size: 0.7rem;
         color: #7f90aa;
       }
     </style>
@@ -28,8 +36,27 @@
   <body>
     <main>
       <h1>alejo-chat · banco de pruebas</h1>
+      <pre id="loaded">cargando desde el manifest…</pre>
       <alejo-chat></alejo-chat>
     </main>
-    <script type="module" src="../dist/alejo-chat.js"></script>
+
+    <script type="module">
+      const base = new URL("../dist/chat/", import.meta.url);
+      const manifest = await (await fetch(new URL("manifest.json", base))).json();
+
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = new URL(manifest.entry, base).href;
+      script.integrity = manifest.integrity;
+      script.crossOrigin = "anonymous";
+      script.addEventListener("error", () => {
+        document.getElementById("loaded").textContent =
+          "integridad rechazada: el bundle no coincide con el manifest";
+      });
+
+      document.getElementById("loaded").textContent =
+        `v${manifest.version} · ${manifest.bytes} bytes · ${manifest.integrity}`;
+      document.head.append(script);
+    </script>
   </body>
 </html>

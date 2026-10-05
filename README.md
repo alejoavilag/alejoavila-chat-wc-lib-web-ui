@@ -4,9 +4,26 @@ Asistente sobre el perfil profesional de Alejandro Ávila, publicado como **cust
 element** para montarse en cualquier página, sin importar con qué esté construida.
 
 ```html
-<script type="module" src="https://…/widgets/chat/v1.0.0/alejo-chat.js"></script>
+<script type="module" src="https://widgets.alejoavila.com/chat/v1.0.0/alejo-chat.js"></script>
 <alejo-chat></alejo-chat>
 ```
+
+El anfitrión no debería fijar esa versión a mano. Se lee del manifest, que además
+trae el hash con el que verificar lo que se descarga:
+
+```js
+const base = "https://widgets.alejoavila.com/chat/";
+const manifest = await (await fetch(base + "manifest.json")).json();
+
+const script = document.createElement("script");
+script.type = "module";
+script.src = base + manifest.entry;
+script.integrity = manifest.integrity;
+script.crossOrigin = "anonymous";
+document.head.append(script);
+```
+
+Si alguien alterara el bundle en el CDN, el navegador se niega a ejecutarlo.
 
 ## Decisiones
 
@@ -41,8 +58,17 @@ npm test        pruebas del dominio y de la aplicación
 npm run lint    incluye la regla de dirección de dependencias
 ```
 
-`npm run build` deja en `dist/` el bundle y un `manifest.json` con la versión, el
-tamaño y el `sha384` de integridad, que es lo que el shell verifica al cargarlo.
+`npm run build` deja el bundle en `dist/chat/v<version>/` y un `manifest.json`
+estable en `dist/chat/` con la versión, el tamaño y el `sha384`. Las rutas con
+versión se sirven inmutables y el manifest se revalida cada minuto, así que
+publicar una versión nueva no invalida la caché de las anteriores.
+
+CI vuelve a calcular el hash sobre el bundle construido y falla si no coincide
+con el manifest, de modo que un artefacto alterado no llega a desplegarse.
+
+El widget vive en su propio sitio de Hosting. Un despliegue de Firebase reemplaza
+el contenido completo de un sitio: compartirlo con la landing haría que cada
+despliegue borrara al otro.
 
 ## Probarlo
 
